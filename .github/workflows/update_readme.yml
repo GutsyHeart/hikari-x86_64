@@ -5,8 +5,6 @@ on:
     branches: [ kurisu-x86_64 ]
   pull_request:
     branches: [ kurisu-x86_64 ]
-  schedule:
-    - cron: "0 */1 * * *"
   
   workflow_dispatch:
   
@@ -24,13 +22,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.PERSONAL_GITHUB_TOKEN }}
         run: |
-          export README_md="$(cat ./.github/README.md.tpl)"
+          export README_md="$(<./.github/README.md.tpl)"
           export COMMIT_ms="$(echo "${{ env.GIT_COMMIT_MESSAGE_BODY }}" | sed 1q)"
-          if [[ "$COMMIT_ms" = *"x86_64"* ]]; then
-             printf "%s\n" "$README_md" | sed "s|_KVER_|${COMMIT_ms}|g" > ./README.md
-          elif [[ "${{ env.GIT_COMMIT_MESSAGE_SUBJECT }}" = *"README.md.tpl"* ]]; then
+          if [[ "$COMMIT_ms" = *'x86_64'* ]]; then
+             printf '%s\n' "$README_md" | sed "s|_KVER_|${COMMIT_ms}|g" > ./README.md
+          elif [[ "${{ env.GIT_COMMIT_MESSAGE_SUBJECT }}" = *'README.md.tpl'* ]]; then
              export KVER_sign="$(grep -oP '## .*>`\K[^`</p>]+' ./README.md)"
-             printf "%s\n" "$README_md" | sed "s|_KVER_|${KVER_sign}|g" > ./README.md
+             printf '%s\n' "$README_md" | sed "s|_KVER_|${KVER_sign}|g" > ./README.md
           fi
 
       - uses: stefanzweifel/git-auto-commit-action@v4
@@ -41,7 +39,7 @@ jobs:
           branch: 'kurisu-x86_64'
           commit_user_name: '牧瀬 紅莉栖'
           commit_user_email: 'alternate-se7en@pm.me'
-          commit_author: '牧瀬 紅莉栖  <alternate-se7en@pm.me>'
+          commit_author: '牧瀬 紅莉栖 <alternate-se7en@pm.me>'
           add_options: '-u'
           skip_dirty_check: true
           disable_globbing: true
